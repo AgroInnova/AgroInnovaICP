@@ -1,44 +1,48 @@
-import { Server } from 'azle';
-import express, { Request } from 'express';
+import { Server } from "azle";
+import express, { Request } from "express";
 
+import cors from "cors";
 
 interface SensorData {
-    moduleId: number;
-    temperature: number;
-    humidity: number;
-    valve: boolean;
-    client: number;
-    id: number;
-    dateTime: string;
+	moduleId: number;
+	temperature: number;
+	humidity: number;
+	valve: boolean;
+	client: number;
+	id: number;
+	dateTime: string;
 }
-
-
 
 let sensorData: SensorData[] = [];
 
 export default Server(() => {
-    const app = express();
+	const app = express();
 
-    app.use(express.json());
+	app.use(cors());
 
-    app.post('/sensorData', (req: Request<{}, {}, SensorData>, res) => {
-        const message = req.body;
-        sensorData.push(message);
-        res.sendStatus(200);
-    });
+	app.use(express.json());
 
-    app.get('/sensorData', (req, res) => {
-        res.json(sensorData);
-    });
+	app.post("/sensorData", (req: Request<{}, {}, SensorData>, res) => {
+		const message = req.body;
+		sensorData.push(message);
+		res.sendStatus(200);
+	});
 
-    app.get('/', (req, res) => {
-        res.send('Hello, Worasdfasdfasdfasdfasdld! ' + JSON.stringify(sensorData));
-    });
+	app.get("/sensorData/get", (req, res) => {
+		console.log("helloWOrld");
+		res.json(sensorData);
+	});
 
-    app.delete('/sensorData', (req, res) => {
-        sensorData = [];
-        res.sendStatus(200);
-    });
+	app.get("/", (req, res) => {
+		res.send(
+			"Hello, Worasdfasdfasdfasdfasdld! " + JSON.stringify(sensorData)
+		);
+	});
 
-    return app.listen();
+	app.delete("/sensorData", (req, res) => {
+		sensorData = [];
+		res.sendStatus(200);
+	});
+
+	return app.listen();
 });
